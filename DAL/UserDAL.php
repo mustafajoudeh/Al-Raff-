@@ -1,20 +1,25 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . "./config/DataBase.php";
-require_once __DIR__ . "../DTOs/User/UserResponseDTO.php";
-require_once __DIR__ . "../DTOs/User/CreateUserDTO.php";
+require_once __DIR__ . "/./config/DataBase.php";
+
+require_once __DIR__ . "/../DTOs/User/UserResponseDTO.php";
+require_once __DIR__ . "/../DTOs/User/CreateUserDTO.php";
+require_once __DIR__ . "/../DTOs/User/UpdateUserDTO.php";
+require_once __DIR__ . "/../DTOs/User/UserAuthDTO.php";
 
 use App\Enum\User\Role;
+use App\Enum\User\Status;
 class UserDAL
 {
-    public static function GetAllUsers(int $CurrentUserID, Role $Role = Role::Customer): array
+    public static function GetAllUsers(int $CurrentUserID, Role $Role = Role::Customer): ?array
     {
         try {
             $pdo = DataBase::Connect();
 
-            $sql = " SELECT `UserName`, `Email`, `Phonenumber` , `Status` 
-                     FROM `users` WHERE 
-                    `Role` = :Role and `UserID` != :UserID; ";
+            $sql = " SELECT `UserID`, `UserName`, `Email`, `Phonenumber`, `Status`
+                      FROM `users`
+                      WHERE `Role` = :Role
+                      AND `UserID` != :UserID;";
 
             $stmt = $pdo->prepare($sql);
 
@@ -31,31 +36,34 @@ class UserDAL
 
             foreach ($DataTable as $row) {
                 $Users[] = new UserResponseDTO(
+                    (int) $row["UserID"],
+                    $Role,
+                    Status::from($row["Status"]),
                     $row["UserName"],
                     $row["Email"],
-                    $row["Status"],
-                    $Role,
-                    $row["Phonenumber"],
+                    $row["Phonenumber"]
                 );
             }
 
             return $Users;
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
-            return [];
+            return null;
         } finally {
             $pdo = null;
         }
 
     }
 
-    public static function GetUserByID(int $UserID): UserResponseDTO|false
+    public static function GetUserByID(int $UserID): ?UserResponseDTO
     {
         try {
             $pdo = DataBase::Connect();
 
-            $sql = "SELECT `UserName`, `Email`, `Phonenumber` , `Role` ,`Status` FROM `users` 
-                     WHERE UserID = :UserID;";
+            $sql = "SELECT `UserID`, `Role`, `Status`, `UserName`,
+                   `Email`, `Phonenumber`
+                    FROM `users`
+                    WHERE `UserID` = :UserID;";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute(["UserID" => $UserID]);
@@ -63,23 +71,98 @@ class UserDAL
             $Row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$Row)
-                return false;
+                return null;
 
             return new UserResponseDTO(
+                (int) $Row['UserID'],
+                Role::from($Row['Role']),
+                Status::from($Row['Status']),
                 $Row['UserName'],
                 $Row['Email'],
-                $Row['Phonenumber'],
-                $Row['Role'],
-                $Row['Status']
+                $Row['Phonenumber']
             );
 
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
-            return false;
+            return null;
         } finally {
             $pdo = null;
         }
 
+    }
+
+    public static function GetUserByEmail(string $Email): ?UserResponseDTO
+    {
+        try {
+            $pdo = DataBase::Connect();
+
+            $sql = "SELECT `UserID`, `UserName`, `Email`, `Phonenumber`,
+                    `Role`, `Status`
+                     FROM `users`
+                     WHERE `Email` = :Email";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(["Email" => $Email]);
+
+            $Row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$Row)
+                return null;
+
+            return new UserResponseDTO(
+                (int) $Row['UserID'],
+                Role::from($Row['Role']),
+                Status::from($Row['Status']),
+                $Row['UserName'],
+                $Row['Email'],
+                $Row['Phonenumber']
+            );
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        } finally {
+            $pdo = null;
+        }
+
+    }
+
+    public static function GetUserForLogin(string $Email): ?UserAuthDTO
+    {
+        try {
+            $pdo = DataBase::Connect();
+
+            $sql = "SELECT `UserID`, `Role`, `Status`, `UserName`
+                , `Email`, `Password`, `Phonenumber`
+                FROM `users`
+                WHERE `Email` = :Email
+                LIMIT 1";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'Email' => $Email
+            ]);
+
+            $Row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$Row) {
+                return null;
+            }
+
+            return new UserAuthDTO(
+                (int) $Row['UserID'],
+                Role::from($Row['Role']),
+                Status::from($Row['Status']),
+                $Row['UserName'],
+                $Row['Email'],
+                $Row['Password'],
+                $Row['Phonenumber']
+            );
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
     }
 
     public static function AddUser(CreateUserDTO $CreateUserDTO): int
@@ -93,20 +176,20 @@ class UserDAL
             $stmt = $pdo->prepare($sql);
             $stmt->execute(
                 [
-                    'Role' => $CreateUserDTO->Role,
-                    'Status' => $CreateUserDTO->status,
+                    'Role' => $CreateUserDTO->role->value,
+                    'Status' => $CreateUserDTO->status->value,
                     'UserName' => $CreateUserDTO->username,
-                    'passwrd' => password_hash($CreateUserDTO->password, PASSWORD_DEFAULT),
+                    'Password' => password_hash(
+                        $CreateUserDTO->password,
+                        PASSWORD_DEFAULT
+                    ),
+                    'Email' => $CreateUserDTO->email,
                     'Phonenumber' => $CreateUserDTO->PhoneNumber
                 ]
             );
-            $Row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$Row)
-                return 0;
 
             return (int) $pdo->lastInsertId();
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
             return 0;
         } finally {
@@ -116,7 +199,7 @@ class UserDAL
 
     }
 
-    public static function UpdateUser(int $UserID, UserResponseDTO $UserResponseDTO): bool
+    public static function UpdateUser(int $UserID, UpdateUserDTO $UpdateUserDTO): bool
     {
         try {
             $pdo = DataBase::Connect();
@@ -131,18 +214,18 @@ class UserDAL
             $stmt = $pdo->prepare($sql);
             $stmt->execute(
                 [
-                    'Role' => $UserResponseDTO->role,
-                    'Status' => $UserResponseDTO->status,
-                    'UserName' => $UserResponseDTO->username,
-                    'Email' => $UserResponseDTO->email,
-                    'Phonenumber' => $UserResponseDTO->PhoneNumber,
+                    'Role' => $UpdateUserDTO->role->value,
+                    'Status' => $UpdateUserDTO->status->value,
+                    'UserName' => $UpdateUserDTO->username,
+                    'Email' => $UpdateUserDTO->email,
+                    'Phonenumber' => $UpdateUserDTO->PhoneNumber,
                     'UserID' => $UserID
                 ]
             );
 
             return $stmt->rowCount() > 0;
 
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
         } finally {
@@ -163,7 +246,7 @@ class UserDAL
                 ]
             );
             return $stmt->rowCount() > 0;
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
         } finally {
@@ -176,18 +259,17 @@ class UserDAL
     {
         try {
             $pdo = DataBase::Connect();
-            $sql = 'UPDATE `users` SET `Status`= "Active" WHERE UserID =:UserID';
+            $sql = 'UPDATE `users` SET `Status` = :Status WHERE UserID = :UserID';
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(
-                [
-                    'UserID' => $UserID
-                ]
-            );
+            $stmt->execute([
+                'Status' => Status::Active->value,
+                'UserID' => $UserID
+            ]);
 
             return $stmt->rowCount() > 0;
 
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
         } finally {
@@ -200,24 +282,77 @@ class UserDAL
     {
         try {
             $pdo = DataBase::Connect();
-            $sql = 'UPDATE `users` SET `Status`= "inActive" WHERE UserID =:UserID';
+            $sql = 'UPDATE `users` SET `Status` = :Status WHERE UserID = :UserID';
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(
-                [
-                    'UserID' => $UserID
-                ]
-            );
+            $stmt->execute([
+                'Status' => Status::InActive->value,
+                'UserID' => $UserID
+            ]);
 
             return $stmt->rowCount() > 0;
 
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
         } finally {
             $pdo = null;
         }
 
+    }
+
+    public static function checkPassword(int|string $identifier, string $password): bool
+    {
+        try {
+            $pdo = DataBase::Connect();
+
+
+            $column = is_int($identifier) ? 'UserID' : 'Email';
+
+            $sql = "SELECT `Password` FROM `users` WHERE `$column` = :identifier LIMIT 1";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'identifier' => $identifier
+            ]);
+
+            $hashedPassword = $stmt->fetchColumn();
+
+            return $hashedPassword !== false
+                && password_verify($password, $hashedPassword);
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            $pdo = null;
+        }
+    }
+
+
+    public static function ChangePassword(int $UserID, string $newPassword): bool
+    {
+        try {
+            $pdo = DataBase::Connect();
+            $sql = 'UPDATE `users` 
+                    set `Password` = :Password 
+                    WHERE UserID = :UserID';
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(
+                [
+                    "UserID" => $UserID,
+                    "Password" => password_hash($newPassword, PASSWORD_DEFAULT)
+                ]
+            );
+            return $stmt->rowCount() > 0;
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            $pdo = null;
+        }
     }
 
 
