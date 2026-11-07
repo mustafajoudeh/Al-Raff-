@@ -1,0 +1,5 @@
+{
+    "require": {
+        "brick/money": "^0.15.2"
+    }
+}

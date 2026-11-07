@@ -10,6 +10,7 @@ require_once __DIR__ . '/../Enum/User/Status.php';
 require_once __DIR__ . '/Middleware/AuthMiddleware.php';
 require_once __DIR__ . '/Controller/AuthController.php';
 require_once __DIR__ . '/Controller/AdminController.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 session_set_cookie_params([
     'lifetime' => 0,
