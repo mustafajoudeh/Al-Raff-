@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . "/./config/DataBase.php";
 
+
+require_once __DIR__ . "/../config/DataBase.php";
 require_once __DIR__ . "/../DTOs/User/UserResponseDTO.php";
 require_once __DIR__ . "/../DTOs/User/CreateUserDTO.php";
 require_once __DIR__ . "/../DTOs/User/UpdateUserDTO.php";
@@ -347,6 +348,44 @@ class UserDAL
             );
             return $stmt->rowCount() > 0;
 
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            $pdo = null;
+        }
+    }
+
+    public static function IsEmailExisted(string $Email, int $ExcludeUserID = 0): bool
+    {
+        try {
+            $pdo = DataBase::Connect();
+            $sql = "SELECT 1 FROM users WHERE Email = :Email AND UserID != :ExcludeUserID LIMIT 1";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                "Email" => $Email,
+                "ExcludeUserID" => $ExcludeUserID
+            ]);
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            $pdo = null;
+        }
+    }
+
+    public static function IsUserNameExisted(string $UserName, int $ExcludeUserID = 0): bool
+    {
+        try {
+            $pdo = DataBase::Connect();
+            $sql = "SELECT 1 FROM users WHERE UserName = :UserName AND UserID != :ExcludeUserID LIMIT 1";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                "UserName" => $UserName,
+                "ExcludeUserID" => $ExcludeUserID
+            ]);
+            return $stmt->fetchColumn() !== false;
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;

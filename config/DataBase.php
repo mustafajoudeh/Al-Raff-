@@ -9,18 +9,17 @@ final class DataBase
 
         $dsn = "mysql:host={$Conn['ServerName']};dbname={$Conn['dbname']};charset=utf8mb4";
         try {
-            echo 'Suuuc';
             return new PDO(
                 $dsn,
                 $Conn['UserName'],
                 $Conn['Password'],
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::MYSQL_ATTR_FOUND_ROWS => true
                 ]
             );
         } catch (PDOException $e) {
-            echo $e->getMessage();
             error_log($e->getMessage());
             return null;
         }
