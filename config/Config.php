@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
 
-$Conn = [
+return [
     'ServerName' => 'localhost',
     'UserName' => 'root',
     'Password' => '',
     'dbname' => 'al-raff'
 ];
-
-return $Conn;

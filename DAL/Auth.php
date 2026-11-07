@@ -5,7 +5,7 @@ require_once __DIR__ . "/../DTOs/User/LoginDTO.php";
 require_once __DIR__ . "/../DTOs/User/UserResponseDTO.php";
 
 use App\Enum\User\Status;
-class Auth
+class AuthDAL
 {
     public static function Login(LoginDTO $loginDTO): ?UserResponseDTO
     {
