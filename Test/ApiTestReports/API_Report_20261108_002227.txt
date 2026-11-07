@@ -1,0 +1,559 @@
+﻿============================================================
+                 AL-RAFF API TEST REPORT
+============================================================
+
+Date          : 2026-11-08 00:22:28
+Base URL      : http://localhost/Al-Raff/API/index.php
+
+Total Tests   : 67
+Passed        : 37
+Failed        : 30
+Success Rate  : 55.22 %
+
+------------------------------------------------------------
+TEST DETAILS
+------------------------------------------------------------
+[FAIL] Health endpoint
+Method   : GET
+Route    : /health
+Expected : 200
+Actual   : 200
+Message  : Al-Raff API is running
+Errors   : 
+------------------------------------------------------------
+[PASS] Health rejects POST
+Method   : POST
+Route    : /health
+Expected : 405
+Actual   : 405
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Unknown route returns 404
+Method   : GET
+Route    : /this-route-does-not-exist
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Guest cannot access /auth/me
+Method   : GET
+Route    : /auth/me
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Guest cannot logout
+Method   : POST
+Route    : /auth/logout
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Guest cannot access admin customers
+Method   : GET
+Route    : /admin/customers
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Guest cannot access admin users
+Method   : GET
+Route    : /admin/users/1
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Login missing body
+Method   : POST
+Route    : /auth/login
+Expected : 400, 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Login invalid email format
+Method   : POST
+Route    : /auth/login
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Login missing password
+Method   : POST
+Route    : /auth/login
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Login wrong credentials
+Method   : POST
+Route    : /auth/login
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Admin login
+Method   : POST
+Route    : /auth/login
+Expected : 200
+Actual   : 200
+Message  : Logged in successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Admin /auth/me
+Method   : GET
+Route    : /auth/me
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[FAIL] Customer login
+Method   : POST
+Route    : /auth/login
+Expected : 200
+Actual   : 200
+Message  : Logged in successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Customer /auth/me
+Method   : GET
+Route    : /auth/me
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer forbidden from customers list
+Method   : GET
+Route    : /admin/customers
+Expected : 403
+Actual   : 403
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer forbidden from admins list
+Method   : GET
+Route    : /admin/admins
+Expected : 403
+Actual   : 403
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer forbidden from getting user
+Method   : GET
+Route    : /admin/users/1
+Expected : 403
+Actual   : 403
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer forbidden from adding user
+Method   : POST
+Route    : /admin/users
+Expected : 403
+Actual   : 403
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer forbidden from adding category
+Method   : POST
+Route    : /admin/categories
+Expected : 403
+Actual   : 403
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer forbidden from adding product
+Method   : POST
+Route    : /admin/products
+Expected : 403
+Actual   : 403
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get customers
+Method   : GET
+Route    : /admin/customers
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get admins
+Method   : GET
+Route    : /admin/admins
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[PASS] Get nonexistent user
+Method   : GET
+Route    : /admin/users/999999999
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Get invalid user ID
+Method   : GET
+Route    : /admin/users/abc
+Expected : 400
+Actual   : 400
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Add user with invalid email
+Method   : POST
+Route    : /admin/users
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Add user with invalid role
+Method   : POST
+Route    : /admin/users
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Add temporary user
+Method   : POST
+Route    : /admin/users
+Expected : 201
+Actual   : 201
+Message  : User created successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get newly created user
+Method   : GET
+Route    : /admin/users/27
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[FAIL] Update temporary user
+Method   : PUT
+Route    : /admin/users/27
+Expected : 200
+Actual   : 200
+Message  : User updated successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Deactivate temporary user
+Method   : PATCH
+Route    : /admin/users/27/deactivate
+Expected : 200
+Actual   : 200
+Message  : User deactivated successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Activate temporary user
+Method   : PATCH
+Route    : /admin/users/27/activate
+Expected : 200
+Actual   : 200
+Message  : User activated successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Change temporary user password
+Method   : PATCH
+Route    : /admin/users/27/password
+Expected : 200
+Actual   : 200
+Message  : Password changed successfully
+Errors   : 
+------------------------------------------------------------
+[PASS] Change password with invalid value
+Method   : PATCH
+Route    : /admin/users/27/password
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Delete temporary user
+Method   : DELETE
+Route    : /admin/users/27
+Expected : 200
+Actual   : 200
+Message  : User deleted successfully
+Errors   : 
+------------------------------------------------------------
+[PASS] Deleted user should not be found
+Method   : GET
+Route    : /admin/users/27
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Delete nonexistent user
+Method   : DELETE
+Route    : /admin/users/999999999
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get all categories
+Method   : GET
+Route    : /categories
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[PASS] Get nonexistent category
+Method   : GET
+Route    : /categories/999999999
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Get category with invalid ID
+Method   : GET
+Route    : /categories/abc
+Expected : 400
+Actual   : 400
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Add category
+Method   : POST
+Route    : /admin/categories
+Expected : 201
+Actual   : 201
+Message  : Category created successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get newly created category
+Method   : GET
+Route    : /categories/6
+Expected : 200
+Actual   : 200
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Update category
+Method   : PUT
+Route    : /admin/categories/6
+Expected : 200
+Actual   : 200
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Delete category
+Method   : DELETE
+Route    : /admin/categories/6
+Expected : 200
+Actual   : 200
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Deleted category should not be found
+Method   : GET
+Route    : /categories/6
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Delete nonexistent category
+Method   : DELETE
+Route    : /admin/categories/999999999
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get all products
+Method   : GET
+Route    : /products
+Expected : 200
+Actual   : 500
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Get nonexistent product
+Method   : GET
+Route    : /products/999999999
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Get product with invalid ID
+Method   : GET
+Route    : /products/abc
+Expected : 400
+Actual   : 400
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get products by nonexistent category
+Method   : GET
+Route    : /categories/999999999/products
+Expected : 200
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Get products by invalid category ID
+Method   : GET
+Route    : /categories/abc/products
+Expected : 400
+Actual   : 400
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Create category for product test
+Method   : POST
+Route    : /admin/categories
+Expected : 201
+Actual   : 201
+Message  : Category created successfully
+Errors   : 
+------------------------------------------------------------
+[PASS] Add product with invalid category
+Method   : POST
+Route    : /admin/products
+Expected : 400, 404, 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Add product with invalid price
+Method   : POST
+Route    : /admin/products
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Add product with negative stock
+Method   : POST
+Route    : /admin/products
+Expected : 422
+Actual   : 422
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Add product
+Method   : POST
+Route    : /admin/products
+Expected : 201
+Actual   : 201
+Message  : Product created successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get newly created product
+Method   : GET
+Route    : /products/16
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[FAIL] Get products by its category
+Method   : GET
+Route    : /categories/7/products
+Expected : 200
+Actual   : 200
+Message  : OK
+Errors   : 
+------------------------------------------------------------
+[FAIL] Update product
+Method   : PUT
+Route    : /admin/products/16
+Expected : 200
+Actual   : 200
+Message  : Product updated successfully
+Errors   : 
+------------------------------------------------------------
+[FAIL] Delete product
+Method   : DELETE
+Route    : /admin/products/16
+Expected : 200
+Actual   : 200
+Message  : Product deleted successfully
+Errors   : 
+------------------------------------------------------------
+[PASS] Deleted product should not be found
+Method   : GET
+Route    : /products/16
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Delete temporary product category
+Method   : DELETE
+Route    : /admin/categories/7
+Expected : 200
+Actual   : 200
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[PASS] Delete nonexistent product
+Method   : DELETE
+Route    : /admin/products/999999999
+Expected : 404
+Actual   : 404
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Customer logout
+Method   : POST
+Route    : /auth/logout
+Expected : 200
+Actual   : 200
+Message  : Logged out successfully
+Errors   : 
+------------------------------------------------------------
+[PASS] Customer session invalid after logout
+Method   : GET
+Route    : /auth/me
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+[FAIL] Admin logout
+Method   : POST
+Route    : /auth/logout
+Expected : 200
+Actual   : 200
+Message  : Logged out successfully
+Errors   : 
+------------------------------------------------------------
+[PASS] Admin session invalid after logout
+Method   : GET
+Route    : /auth/me
+Expected : 401
+Actual   : 401
+Message  : 
+Errors   : 
+------------------------------------------------------------
+============================================================
+SUMMARY
+============================================================
+Total  : 67
+Passed : 37
+Failed : 30
+Rate   : 55.22 %
+============================================================

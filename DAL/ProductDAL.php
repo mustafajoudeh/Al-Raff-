@@ -34,14 +34,15 @@ class ProductDAL
             $pdo = DataBase::Connect();
 
             $sql = "SELECT
-                    p.ProductName,
-                    c.CategoryName,
-                    p.Price,
-                    p.Stock,
-                    p.Author
-                FROM product AS p
-                INNER JOIN category AS c
-                    ON p.CategoryID = c.CategoryID";
+    p.ProductID,
+    p.ProductName,
+    c.CategoryName,
+    p.Price,
+    p.Stock,
+    p.Author
+FROM product AS p
+INNER JOIN category AS c
+    ON p.CategoryID = c.CategoryID";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
@@ -258,6 +259,39 @@ class ProductDAL
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
+        } finally {
+            $pdo = null;
+        }
+    }
+
+    public static function HasProductsInCategory(int $CategoryID): ?bool
+    {
+        if ($CategoryID <= 0) {
+            return false;
+        }
+
+        $pdo = null;
+
+        try {
+            $pdo = DataBase::Connect();
+
+            $sql = "SELECT EXISTS(
+                    SELECT 1
+                    FROM `product`
+                    WHERE `CategoryID` = :CategoryID
+                )";
+
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->execute([
+                "CategoryID" => $CategoryID
+            ]);
+
+            return (bool) $stmt->fetchColumn();
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
         } finally {
             $pdo = null;
         }

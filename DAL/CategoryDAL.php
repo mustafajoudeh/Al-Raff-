@@ -8,11 +8,17 @@ class CategoryDAL
 {
     public static function GetAllCategories(): ?array
     {
+        $pdo = null;
+
         try {
             $pdo = DataBase::Connect();
 
-            $sql = "SELECT `CategoryName`, `Description`, `URLImage`
-                    FROM `category`";
+            $sql = "SELECT
+                    `CategoryID`,
+                    `CategoryName`,
+                    `Description`,
+                    `URLImage`
+                FROM `category`";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
@@ -23,7 +29,7 @@ class CategoryDAL
 
             foreach ($rows as $row) {
                 $Categories[] = new CategoryDTO(
-                    null,
+                    (int) $row["CategoryID"],
                     $row["CategoryName"],
                     $row["Description"],
                     $row["URLImage"]
@@ -153,6 +159,39 @@ class CategoryDAL
             ]);
 
             return $stmt->rowCount() > 0;
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        } finally {
+            $pdo = null;
+        }
+    }
+
+    public static function IsCategoryExisted(int $CategoryID): bool
+    {
+        if ($CategoryID <= 0) {
+            return false;
+        }
+
+        $pdo = null;
+
+        try {
+            $pdo = DataBase::Connect();
+
+            $sql = "SELECT EXISTS(
+                    SELECT 1
+                    FROM `category`
+                    WHERE `CategoryID` = :CategoryID
+                )";
+
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->execute([
+                "CategoryID" => $CategoryID
+            ]);
+
+            return (bool) $stmt->fetchColumn();
 
         } catch (PDOException $e) {
             error_log($e->getMessage());

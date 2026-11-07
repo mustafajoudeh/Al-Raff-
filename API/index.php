@@ -1,16 +1,22 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 require_once __DIR__ . '/Request.php';
 require_once __DIR__ . '/Response.php';
 require_once __DIR__ . '/Router.php';
+
 require_once __DIR__ . '/../Enum/Mode.php';
 require_once __DIR__ . '/../Enum/User/Role.php';
 require_once __DIR__ . '/../Enum/User/Status.php';
+
 require_once __DIR__ . '/Middleware/AuthMiddleware.php';
+
 require_once __DIR__ . '/Controller/AuthController.php';
 require_once __DIR__ . '/Controller/AdminController.php';
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/Controller/CategoryController.php';
+require_once __DIR__ . '/Controller/ProductController.php';
 
 session_set_cookie_params([
     'lifetime' => 0,

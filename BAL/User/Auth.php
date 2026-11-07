@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . "/../../DAL/Auth.php";
+require_once __DIR__ . "/../../DAL/AuthDAL.php";
 
 
 use App\Enum\User\Status;

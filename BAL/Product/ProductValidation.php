@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . "/../../DTOs/Product/ProductDTO.php";
-
+require_once __DIR__ . "/../../DAL/CategoryDAL.php";
 use Brick\Money\Money;
 
 class ProductValidation
@@ -11,19 +11,21 @@ class ProductValidation
     {
         $Errors = [];
 
-        // Category
+
         if ($DTO->CategoryID <= 0) {
-            $Errors[] = "Invalid category.";
+            $Errors[] = "Invalid category ID.";
+        } elseif (!CategoryDAL::IsCategoryExisted($DTO->CategoryID)) {
+            $Errors[] = "Category does not exist.";
         }
 
-        // Product Name
+
         if (empty(trim($DTO->ProductName))) {
             $Errors[] = "Product name is required.";
         } elseif (strlen(trim($DTO->ProductName)) > 100) {
             $Errors[] = "Product name must not exceed 100 characters.";
         }
 
-        // Price
+
         try {
             if (
                 !preg_match('/^\d+(?:\.\d{1,3})?$/D', $DTO->Price)
@@ -40,24 +42,24 @@ class ProductValidation
             $Errors[] = "Invalid price.";
         }
 
-        // Stock
+
         if ($DTO->Stock < 0) {
             $Errors[] = "Stock cannot be negative.";
         }
 
-        // Author
+
         if (empty(trim($DTO->Author))) {
             $Errors[] = "Author is required.";
         } elseif (strlen(trim($DTO->Author)) > 50) {
             $Errors[] = "Author must not exceed 50 characters.";
         }
 
-        // Pages
+
         if ($DTO->Pages <= 0) {
             $Errors[] = "Pages must be greater than zero.";
         }
 
-        // Description
+
         if (
             $DTO->Description !== null &&
             strlen($DTO->Description) > 255
@@ -65,7 +67,7 @@ class ProductValidation
             $Errors[] = "Description must not exceed 255 characters.";
         }
 
-        // ISBN
+
         if (
             $DTO->ISBN !== null &&
             strlen($DTO->ISBN) > 13
@@ -73,7 +75,7 @@ class ProductValidation
             $Errors[] = "ISBN must not exceed 13 characters.";
         }
 
-        // Publisher
+
         if (
             $DTO->Publisher !== null &&
             strlen($DTO->Publisher) > 50
@@ -81,7 +83,7 @@ class ProductValidation
             $Errors[] = "Publisher must not exceed 50 characters.";
         }
 
-        // Published Year
+
         if (
             $DTO->PublishedYear !== null &&
             $DTO->PublishedYear <= 0

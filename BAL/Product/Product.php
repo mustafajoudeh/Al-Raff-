@@ -10,17 +10,17 @@ use Brick\Money\Money;
 
 class Product
 {
-    private ?int $ProductID;
-    private int $CategoryID;
-    private string $ProductName;
-    private string $Price;
-    private int $Stock;
-    private string $Author;
-    private int $Pages;
-    private ?string $Description;
-    private ?string $ISBN;
-    private ?string $Publisher;
-    private ?int $PublishedYear;
+    public ?int $ProductID;
+    public int $CategoryID;
+    public string $ProductName;
+    public string $Price;
+    public int $Stock;
+    public string $Author;
+    public int $Pages;
+    public ?string $Description;
+    public ?string $ISBN;
+    public ?string $Publisher;
+    public ?int $PublishedYear;
 
     private en_Mode $Mode;
 
@@ -85,6 +85,14 @@ class Product
     public function GetStock(): int
     {
         return $this->Stock;
+    }
+
+    public static function GetProductDTO(int $ProductID): ?ProductDTO
+    {
+        if ($ProductID <= 0)
+            return null;
+
+        return ProductDAL::GetProduct($ProductID);
     }
 
     public function Fill(ProductDTO $DTO): void

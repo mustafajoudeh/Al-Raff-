@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . "/../../DAL/CategoryDAL.php";
 require_once __DIR__ . "/../../DTOs/Category/CategoryDTO.php";
+require_once __DIR__ . "/../../DAL/ProductDAL.php";
 
 use App\Enum\en_Mode;
 
@@ -162,9 +163,33 @@ class Category
 
     public static function DeleteCategory(int $CategoryID): bool
     {
-        if ($CategoryID <= 0)
+        if ($CategoryID <= 0) {
             return false;
+        }
+
+        $HasProducts = self::HasProducts($CategoryID);
+
+        if ($HasProducts !== false) {
+            return false;
+        }
 
         return CategoryDAL::DeleteCategory($CategoryID);
     }
+
+    public static function IsCategoryExisted(int $CategoryID): bool
+    {
+        if ($CategoryID <= 0)
+            return false;
+        return CategoryDAL::IsCategoryExisted($CategoryID);
+    }
+
+    public static function HasProducts(int $CategoryID): ?bool
+    {
+        if ($CategoryID <= 0) {
+            return false;
+        }
+
+        return ProductDAL::HasProductsInCategory($CategoryID);
+    }
+
 }
