@@ -1,0 +1,29 @@
+/* Product and category listing utilities */
+.toolbar { padding:15px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:14px; }
+.table-card { overflow:hidden; }
+.table-scroll { overflow:auto; }
+table { width:100%; border-collapse:collapse; min-width:760px; }
+th,td { padding:13px 16px; text-align:right; vertical-align:middle; }
+th { background:var(--surface-2); color:var(--muted); font-weight:600; font-size:.76rem; white-space:nowrap; }
+td { border-top:1px solid var(--line); font-size:.84rem; }
+tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 40%,transparent); }
+.cell-main { display:grid; gap:1px; }
+.cell-main strong { font-weight:600; }
+.cell-main span { color:var(--muted); font-size:.75rem; }
+.table-actions { display:flex; gap:6px; align-items:center; }
+.table-icon { width:32px; height:32px; border:1px solid var(--line); background:var(--surface); color:var(--muted); border-radius:3px; display:grid; place-items:center; }
+.table-icon:hover { color:var(--primary); border-color:var(--accent); }
+.table-icon.danger:hover { color:var(--danger); border-color:var(--danger); }
+.table-icon svg { width:15px; height:15px; }
+.pill { display:inline-flex; align-items:center; gap:5px; border-radius:30px; padding:3px 9px; font-size:.72rem; font-weight:600; white-space:nowrap; }
+.pill-success { background:var(--success-bg); color:var(--success); }
+.pill-danger { background:var(--danger-bg); color:var(--danger); }
+.pill-warning { background:var(--warning-bg); color:var(--warning); }
+.pill-neutral { background:var(--surface-2); color:var(--muted); }
+.empty-state { text-align:center; padding:48px 15px; color:var(--muted); }
+.empty-state strong { display:block; color:var(--ink); font:700 1.25rem var(--font-display); margin-bottom:5px; }
+.loading-row { text-align:center; padding:35px; color:var(--muted); }
+.book-cell { display:flex; align-items:center; gap:10px; min-width:200px; }
+.book-cover { width:38px; height:49px; flex:none; border-radius:2px; background:var(--primary); color:var(--on-primary); display:grid; place-items:center; overflow:hidden; font:700 1.2rem var(--font-display); }
+.book-cover img,.category-thumb img { width:100%; height:100%; object-fit:cover; }
+.category-thumb { width:42px; height:42px; border-radius:3px; background:var(--surface-2); display:grid; place-items:center; overflow:hidden; color:var(--primary); }

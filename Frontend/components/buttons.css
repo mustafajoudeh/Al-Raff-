@@ -1,0 +1,10 @@
+.btn { min-height:42px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:9px 17px; border-radius:3px; font-weight:600; transition:filter var(--transition),transform var(--transition); }
+.btn:hover { filter:brightness(1.07); }
+.btn:active { transform:translateY(1px); }
+.btn-primary { background:var(--primary); color:var(--on-primary); }
+.btn-accent { background:var(--accent); color:var(--on-accent); }
+.btn-outline { background:var(--surface); border:1px solid var(--line); color:var(--ink); }
+.btn-danger { background:var(--danger-bg); color:var(--danger); border:1px solid color-mix(in srgb,var(--danger) 25%,transparent); }
+.btn-sm { min-height:33px; padding:5px 10px; font-size:.78rem; }
+.btn-large { min-height:50px; padding:12px 25px; }
+.btn svg { width:17px; height:17px; }

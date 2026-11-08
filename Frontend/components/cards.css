@@ -1,0 +1,2 @@
+.card { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 2px 8px rgba(28,20,23,.025); }
+.card-pad { padding:20px; }
